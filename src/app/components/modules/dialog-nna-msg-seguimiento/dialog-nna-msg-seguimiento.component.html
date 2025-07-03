@@ -1,0 +1,103 @@
+<p-dialog header="Agendar seguimiento" [(visible)]="visible" [modal]="true" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '45vw' }" [draggable]="false" [resizable]="false">
+  <div class="row align-items-center mt-3 mb-3 text-left">
+    <div class="col-4 col-md-3 text-end fw-bold">
+      <label for="entidad" class="form-label">Agente de seguimiento*</label>
+    </div>
+    <div class="col-8 col-md-9 p-fluid text-left">
+      <p-dropdown
+        [(ngModel)]="formAgenteSeguimiento"
+        [options]="agenteAsignadoListado"
+        optionLabel="fullName"
+        filterBy="fullName"
+        placeholder="Seleccione" />
+    </div>
+    <div *ngIf="submitted && (!seguimiento.usuarioId || seguimiento.usuarioId.trim() === '')" class="col-8 offset-4 col-md-9 offset-md-3 text-danger">
+      Campo requerido
+    </div>
+  </div>
+
+  <div class="row align-items-center mb-3">
+    <div class="col-4 col-md-3 text-end fw-bold">
+      <label for="entidad" class="form-label">Fecha*</label>
+    </div>
+    <div class="col-8 col-md-9 p-fluid">
+      <div class="row align-items-center mb-3">
+        <div class="col-8 col-md-5 p-fluid mb-3 mb-md-0">
+          <div class="row mb-1">
+            <div class="col-12">
+              <p-calendar [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" tabindex="3" [(ngModel)]="fecha"  (ngModelChange)="validarFecha()"
+                [appendTo]="'body'" placeholder="dd/mm/aaaa" />
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-12 button-group">
+                  <button class="btn col-4 rounded-2 text-center me-0 py-0" [ngClass]="{'active': tiempo === 'Hoy'}"  (click)="applyFecha('Hoy')">Hoy</button>
+                  <button class="btn col-8 rounded-2 text-center me-0 py-0" [ngClass]="{'active': tiempo === 'Mañana'}"  (click)="applyFecha('Mañana')">Mañana</button>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-12 text-danger" *ngIf="submitted && (!seguimiento.fechaSeguimiento)">
+                  Campo requerido
+              </div>
+          </div>
+        </div>
+        <div class="col-4 col-md-1 text-end fw-bold">
+          <label for="cargo" class="form-label">Hora*</label>
+        </div>
+        <div class="col-8 col-md-6 p-fluid align-items-center row ms-1">
+          <input 
+                type="number" 
+                tabindex="1"
+                pInputText 
+                [(ngModel)]="hora" 
+                [min]="1" 
+                [max]="12" 
+                placeholder="HH" 
+                class="col-auto me-1"
+                style="width: 65px;" />
+
+            <!-- Minutos -->
+            <input 
+              type="number" 
+              tabindex="2"
+              pInputText 
+              [(ngModel)]="minutos" 
+              [min]="0" 
+              [max]="59" 
+              placeholder="MM" 
+              class="col-auto"
+              style="width: 65px;" />
+
+              <!-- AM/PM -->
+              <div class="col-auto button-group">
+                  <button class="btn col-auto rounded-2 text-center me-0 py-0" [ngClass]="{'active': periodo === 'AM'}" style="width: 60px; height: 40px;" (click)="apply('AM')">AM</button>
+                  <button class="btn col-auto rounded-2 text-center me-0 py-0" [ngClass]="{'active': periodo === 'PM'}" style="width: 60px; height: 40px;" (click)="apply('PM')">PM</button>
+              </div>
+        </div>
+        <div class="col-8 offset-4 col-md-3 offset-md-7" *ngIf="submitted && (!seguimiento.fechaSeguimiento)">
+          <div class="text-danger">
+              Campo requerido
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <button type="submit" class="btn text-white rounded-3 btn-lg"
+      style="background-color: #73b7ad; color: white; width: 150px" (click)="guardar()">
+      <i *ngIf="saving" class="pi pi-spin pi-spinner"></i> 
+      GUARDAR
+    </button>
+  </div>
+</p-dialog>
+
+<p-dialog 
+  [(visible)]="mostrarMensaje" (onHide)="terminar()" modal="true" dismissableMask="true" [style]="{ width: '500px' }"
+  [closable]="true" [appendTo]="'body'" [baseZIndex]="10000" [contentStyle]="{ 'text-align': 'center' }">
+  <div>
+    <i class="pi pi-check-circle mb-3" style="font-size: 4rem; color: #4CAF50;"></i>
+    <h3>Seguimiento almacenado correctamente</h3>
+    <button class="btn text-white rounded-3 btn-lg mt-3" type="button" style="background-color: #73B7AD; color: white; width: 200px" (click)="terminar()">Aceptar</button>
+  </div>
+</p-dialog>

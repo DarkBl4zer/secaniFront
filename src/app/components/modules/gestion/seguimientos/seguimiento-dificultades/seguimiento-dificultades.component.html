@@ -1,0 +1,262 @@
+<body class="formato-fondo fuente-letra pe-4">
+    <div class="row mb-3  align-items-center">
+        <div class="col-12 d-flex justify-content-between">
+            <p-breadcrumb class="" [model]="items">
+                <ng-template pTemplate="item" let-item>
+                    <ng-container *ngIf="item.route; else elseBlock">
+                        <a [routerLink]="item.route" class="p-menuitem-link">
+                            <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                            <span class="text-primary font-semibold">{{ item.label }}</span>
+                        </a>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <a [href]="item.url">
+                            <span class="text-color">{{ item.label }}</span>
+                        </a>
+                    </ng-template>
+                </ng-template>
+            </p-breadcrumb>
+            <div>
+                Estado: <app-estado-nna [nnaEstadoId]="nna.estadoId" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-seguimiento-steps [stepsCount]="6" [activeIndex]="3" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p-card>
+                <div class="row">
+                    <div class="col-12 col-md-6 pe-5">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="fw-bold pe-3 fs-5">¿Ha presentado dificultades en los siguientes procesos?</label>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difAutorizaciondeMedicamentos"
+                                        [binary]="true"
+                                        label="Autorización de medicamentos"
+                                        name="autorizacionMedicamentos" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difEntregaMedicamentosLAP"
+                                        [binary]="true"
+                                        label="Entrega de medicamentos LAP"
+                                        name="entregaMedicamentosLAP" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difEntregaMedicamentosNoLAP"
+                                        [binary]="true"
+                                        label="Entrega de medicamentos no LAP"
+                                        name="entregaMedicamentosNoLAP" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difAsignaciondeCitas"
+                                        [binary]="true"
+                                        label="Asignación de citas"
+                                        name="asignacionCitas" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difHanCobradoCuotasoCopagos"
+                                        [binary]="true"
+                                        label="Le han cobrado copagos o cuotas moderadoras"
+                                        name="leHanCobradoCopagosCuotas" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difAutorizacionProcedimientos"
+                                        [binary]="true"
+                                        label="Autorización de procedimientos"
+                                        name="autoriacionProcedimientos" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difRemisionInstitucionesEspecializadas"
+                                        [binary]="true"
+                                        label="Remisión a instituciones especializadas"
+                                        name="leHanCobradoCopagosCuotas" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difMalaAtencionIPS"
+                                        [binary]="true"
+                                        label="Mala atención en la IPS"
+                                        name="malaAtencionIPS"
+                                        (onChange)="MalaAtencion()" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2 flex flex-wrap p-fluid" *ngIf="nna.difMalaAtencionIPS">
+                            <div class="col-8 flex-auto" style="padding-left: 40px;">
+                                <p-autoComplete 
+                                    [(ngModel)]="selectedIPSCual"
+                                    [suggestions]="filteredItems"
+                                    [forceSelection]="true"
+                                    (completeMethod)="searchItems($event)"
+                                    [field]="'nombre'" 
+                                    [minLength]="3"
+                                    placeholder="¿Cuál?"
+                                    [disabled]="!nna.difMalaAtencionIPS"
+                                    [dropdown]="false">
+                                </p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difFallasenMIPRES"
+                                        [binary]="true"
+                                        label="Fallas en MIPRES"
+                                        name="fallasMIPRES" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-4">
+                            <div class="col-12">
+                                <div class="flex align-items-center">
+                                    <p-checkbox 
+                                        [(ngModel)]="nna.difFallaConvenioEAPBeIPSTratante"
+                                        [binary]="true"
+                                        label="Falla en el convenio entre la EAPB e IPS tratante"
+                                        name="fallaConventioEAPBeIPS" />
+                                </div>
+                            </div>
+                        </div>
+                        <app-seguimiento-alertas (alertasChange)="cargarAlertas($event)" />
+                    </div>
+                    <div class="col-12 col-md-6  pe-5">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="fw-bold pe-3 fs-5">Información de traslados</label>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-3 flex flex-wrap p-fluid">
+                            <div class="col-8">
+                                <label for="estado" class="fw-bold">¿Ha sido trasladado de institución?</label>
+                            </div>
+                            <div class="col-4 button-group d-inline-flex align-items-center d-flex justify-content-end">
+                                <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': nna.trasladosHaSidoTrasladadodeInstitucion}" style="width: 70px;" (click)="HaSidoTrasladado(true)">SÍ</button>
+                                <button class="btn col-auto rounded-2 text-center me-0 py-0" [ngClass]="{'active': !nna.trasladosHaSidoTrasladadodeInstitucion}" style="width: 70px;" (click)="HaSidoTrasladado(false)">NO</button>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2" *ngIf="nna.trasladosHaSidoTrasladadodeInstitucion">
+                            <div class="col-4">
+                                <label for="numeroTraslados" class="fw-bold">Número de traslados</label>
+                            </div>
+                            <div class="col-8 p-fluid">
+                                <input id="numeroTraslados" type="number" min="1" pInputText [(ngModel)]="nna.trasladosNumerodeTraslados" (change)="NumeroTraslados()">
+                            </div>
+                        </div>
+                        <div *ngFor="let traslado of trasladosArray; let i = index" class="row align-items-center mb-2 flex flex-wrap p-fluid">
+                            <div class="col-4">
+                                <label for="ips-{{i}}" class="fw-bold">IPS</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-autoComplete 
+                                    [(ngModel)]="selectedIPS[i]"
+                                    [suggestions]="filteredItems"
+                                    [forceSelection]="true"
+                                    (completeMethod)="searchItems($event)"
+                                    [field]="'nombre'" 
+                                    [minLength]="3"
+                                    placeholder="¿Cuál?"
+                                    [disabled]="!nna.difMalaAtencionIPS"
+                                    [dropdown]="false">
+                                </p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="row mb-3 p-fluid">
+                            <div class="col-8">
+                                <label for="estado" class="fw-bold">¿Ha tenido que recurrir a algún tipo de acción legal para acceder a la atención?</label>
+                            </div>
+                            <div class="col-4 button-group d-inline-flex align-items-center d-flex justify-content-end">
+                                <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': nna.trasladosHaRecurridoAccionLegal}" style="width: 70px;" (click)="AccionesLegales(true)">SÍ</button>
+                                <button class="btn col-auto rounded-2 text-center me-0 py-0" [ngClass]="{'active': !nna.trasladosHaRecurridoAccionLegal}" style="width: 70px;" (click)="AccionesLegales(false)">NO</button>
+                            </div>
+                        </div>
+                        <div class="row mb-2 p-fluid" *ngIf="nna.trasladosHaRecurridoAccionLegal">
+                            <div class="col-4">
+                                <label for="motivo" class="fw-bold">Motivo</label>
+                            </div>
+                            <div class="col-8 p-fluid">
+                                <textarea id="motivo" pInputText rows="4" [(ngModel)]="nna.trasladosMotivoAccionLegal" placeholder="Escriba aquí"></textarea>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 p-fluid" *ngIf="nna.trasladosHaRecurridoAccionLegal">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Tipo de recurso</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [(ngModel)]="selectedTipoRecurso"
+                                    [options]="tiposRecursos"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="tiposRecursos"
+                                    id="tiposRecursos"
+                                    placeholder="Seleccione" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </p-card>
+            <div class="row align-items-center mt-3">
+                <div class="col-12 text-center">
+                    <button class="btn text-white rounded-4 btn-lg me-3" type="button" style="background-color: #fac87e; width: 320px;"
+                        (click)="abrirGuardarYReagendar()">
+                        GUARDAR Y REAGENDAR
+                    </button>
+                    <button class="btn text-white rounded-4 btn-lg" type="button" style="background-color: #ff9801; width: 200px;" (click)="Siguiente()" ><i *ngIf="saving" class="pi pi-spin pi-spinner"></i> SIGUIENTE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-seguimiento-guardar 
+        [show]="showGuardarSeguimiento" 
+        [seguimiento]="seguimientoActual"
+        (onClose)="cerrarGuardarYReagendar()" 
+    />
+</body>

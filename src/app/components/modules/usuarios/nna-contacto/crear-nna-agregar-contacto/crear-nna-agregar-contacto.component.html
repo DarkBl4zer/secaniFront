@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-12">
+                <label>
+                    Identificación del cuidador o representante legal*
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <p-table [value]="listadoContacto" [first]="first" [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '10mrem; font-size:5px' }" (onPage)="pageChange($event)"
+            [paginator]="true" [rows]="5"
+            [rowsPerPageOptions]="[5, 10, 25, 50]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"    
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Contacto</th>
+                    <th>Parantesco</th>
+                    <th>Correo electrónico</th>
+                    <th>Teléfono de contacto</th>
+                    <th>Acción</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-listadoContacto>
+                <tr>
+                    <td>{{ listadoContacto.nombreCompletoCuidador }}</td>
+                    <td>{{ listadoContacto.parentescoCuidador }}</td>
+                    <td>{{ listadoContacto.correoElectronicoCuidador }}</td>
+                    <td>{{ listadoContacto.numeroTelefonoCuidador }}</td>
+                    <td>
+                        <button class="btn fondo-color-principal text-color-blanco rondear-full"
+                            (click)="editarContacto(listadoContacto)">
+                            <i class="pi pi-pencil"></i>
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="text-end">
+            <button class="btn fondo-color-principal text-color-blanco col-sm-3" (click)="guardar()"
+                [disabled]="!formNNA.valid">
+                <i class="pi pi-plus"></i>
+                <span>Agregar contacto</span>
+            </button>
+        </div>
+    </div>
+</div>

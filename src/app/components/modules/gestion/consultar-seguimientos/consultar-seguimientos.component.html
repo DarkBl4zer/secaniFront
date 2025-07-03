@@ -1,0 +1,211 @@
+<div class="m-3">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h3>Seguimientos</h3>
+            <app-boton-notificacion></app-boton-notificacion>
+        </div>
+    </div>
+    
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div class="button-group">
+                <button class="btn col-auto bg-white rounded-4 text-center me-2 py-0 mb-2 mb-md-0 " [ngClass]="{'active': activeFilter === '1'}" style="width: 150px;" (click)="applyFilter('1')">
+                    <div class="row">
+                        <div class="col">
+                            Hoy
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="fw-bold mb-0">{{cntFiltros.hoy}}</h3>
+                        </div>
+                    </div>
+                </button>
+                <button class="btn col-auto  bg-white rounded-4 text-center me-2 py-0 mb-2 mb-md-0" [ngClass]="{'active': activeFilter === '2'}" style="width: 150px;" (click)="applyFilter('2')">
+                    <div class="row">
+                        <div class="col">
+                            Con alerta
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="fw-bold mb-0">{{cntFiltros.conAlerta}}</h3>
+                        </div>
+                    </div>
+                </button>
+                <button class="btn col-auto bg-white rounded-4 text-center me-2 py-0 mb-2 mb-md-0" [ngClass]="{'active': activeFilter === '3'}" style="width: 150px;" (click)="applyFilter('3')">
+                    <div class="row">
+                        <div class="col">
+                            Todos
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="fw-bold mb-0">{{cntFiltros.todos}}</h3>
+                        </div>
+                    </div>
+                </button>
+                <button class="btn col-auto bg-white rounded-4 text-center me-2 py-0 mb-2 mb-md-0" [ngClass]="{'active': activeFilter === '4'}" style="width: 240px;" (click)="applyFilter('4')">
+                    <div class="row">
+                        <div class="col">
+                            Solicitados por cuidador
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="fw-bold mb-0">{{cntFiltros.solicitadosPorCuidador}}</h3>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-0 p-0">
+                <p-table 
+                    [value]="seguimientos" 
+                    [paginator]="true" 
+                    [rows]="5" 
+                    [rowsPerPageOptions]="[5, 10, 25, 50]"
+                    [showCurrentPageReport]="true" 
+                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+                    [responsive]="true"
+                    [autoLayout]="true"
+                    >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="header-th" [width]="100">No. Caso</th>
+                            <th class="header-th" [width]="120">Fecha Notificación</th>
+                            <th class="header-th">Nombre</th>
+                            <th class="header-th" [width]="200">Estado</th>
+                            <th class="header-th">Asunto Última Actuación</th>
+                            <th class="header-th" [width]="120">Última Actuación</th>
+                            <th class="header-th" [width]="100">Alertas</th>
+                            <th class="header-th" [width]="100">Acción</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-seguimiento>
+                        <tr>
+                            <td><a [routerLink]="['/gestion/detalle_seguimiento', seguimiento.noCaso]">{{ seguimiento.noCaso }}</a></td>
+                            <td>{{ seguimiento.fechaNotificacion | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ seguimiento.nombreCompleto }}</td>
+                            <td><span class="badge w-100" [ngStyle]="{'background-color': seguimiento.estado.colorBG, 'color': seguimiento.estado.colorText}">{{ seguimiento.estado.nombre }}</span></td>
+                            <td>{{ seguimiento.asuntoUltimaActuacion }}</td>
+                            <td>{{ seguimiento.fechaUltimaActuacion | date:'dd/MM/yyyy' }}</td>
+                            <td>
+                                <span *ngFor="let alerta of seguimiento.alertas" [ngClass]="getBadgeColor(alerta.id)" class="badge text-white me-1">
+                                {{ alerta.nombre }}
+                                </span>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone-outbound-fill me-2" style="color: #73b7ad; cursor: pointer;" (click)="intentosLlamada(seguimiento.id)"></i>
+                                <i *ngIf="seguimiento.asuntoUltimaActuacion?.toLowerCase() == 'solicitado por cuidador'" class="bi bi-eye-fill" style="color: #73b7ad; cursor: pointer;" (click)="solicitudCuidador(seguimiento.noCaso)"></i>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="showDialog" [modal]="true" [style]="{width: '600px'}">
+    <div *ngIf="isLoading" class="spinner">
+      <p class="{{colorMensaje}}">{{mensajeCarga}}</p>
+      <!-- Aquí puedes poner tu spinner de loading, por ejemplo de Bootstrap o un icono -->
+    </div>
+    <div class="px-3" *ngIf="!isLoading">
+        <div class="row mb-3">
+            <div class="col-12 text-center">
+                <span class="fw-bold">Solicitud de seguimiento</span>
+            </div>
+            <div class="col-12 text-center">
+                <span class="fw-bold">No. CASO: {{nna.id}}</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="usuario">
+                    <i class="bi bi-person-circle foto-perfil"></i>
+                    <div class="datos-usuario">
+                        <p><strong>{{nna.primerNombre}} {{nna.segundoNombre}} {{nna.primerApellido}} {{nna.segundoApellido}}</strong></p>
+                        <p *ngIf="nna.sexoId == 'M'">Femenino</p>
+                        <p *ngIf="nna.sexoId == 'H'">Masculino</p>
+                        <p>{{nna.edad}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="detalles-seguimiento">
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Nombre Solicitante:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ nna.cuidadorNombres }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Parentesco:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ parentesco?.nombre }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Correo:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ nna.cuidadorEmail }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Teléfono:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ nna.cuidadorTelefono }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Diagnóstico:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ diagnostico?.nombre }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4">
+                            <span class="fw-bold">Fecha diagnóstico:</span>
+                        </div>
+                        <div class="col-8">
+                            <span>{{ nna.fechaDiagnostico | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <span class="fw-bold">Observación:</span>
+                        </div>
+                        <div class="col-8">
+                            <div class="observacion">
+                                <span>{{ nna.tratamientoObservaciones }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row mb-1">
+                        <div class="col-8 offset-4">
+                            <a href="ruta/a/anexo.pdf" class="anexo-link">Anexo-Diagnóstico Francy.pdf</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>

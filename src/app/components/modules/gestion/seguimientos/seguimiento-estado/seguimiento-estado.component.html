@@ -1,0 +1,240 @@
+<body class="formato-fondo fuente-letra pe-4">
+    <div class="row mb-3  align-items-center">
+        <div class="col-12 d-flex justify-content-between">
+            <p-breadcrumb class="" [model]="items">
+                <ng-template pTemplate="item" let-item>
+                    <ng-container *ngIf="item.route; else elseBlock">
+                        <a [routerLink]="item.route" class="p-menuitem-link">
+                            <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                            <span class="text-primary font-semibold">{{ item.label }}</span>
+                        </a>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <a [href]="item.url">
+                            <span class="text-color">{{ item.label }}</span>
+                        </a>
+                    </ng-template>
+                </ng-template>
+            </p-breadcrumb>
+            <div>
+                Estado: <app-estado-nna [nnaEstadoId]="nna.estadoId" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-seguimiento-steps [stepsCount]="stepsCount" [activeIndex]="1" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row mb-2">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <p-card [style]="{ 'height': '100%' }">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="fw-bold pe-3 fs-5">Información del diagnóstico y tratamiento</label>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Estado</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [(ngModel)]="selectedEstado"
+                                    [options]="estados"
+                                    [loading]="isLoadingEstados"
+                                    (onChange)="onChangeEstado()"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="estado"
+                                    id="estado"
+                                    placeholder="Seleccione" />
+
+                                <div *ngIf="submitted2 && (!nna.estadoId || nna.estadoId === 0)" class="text-danger">
+                                    Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Diagnóstico</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [(ngModel)]="selectedDiagnostico"
+                                    [options]="diagnosticos"
+                                    [loading]="isLoadingDiagnostico"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="diagnosticos"
+                                    id="diagnosticos"
+                                    placeholder="Seleccione" />
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="fechaNacimiento" class="fw-bold">Fecha de consulta</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-calendar [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [(ngModel)]="nna.fechaConsultaDiagnostico"  />
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="fechaNacimiento" class="fw-bold">Fecha de diagnóstico</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-calendar [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [(ngModel)]="nna.fechaDiagnostico"  />
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="fechaNacimiento" class="fw-bold">Fecha de inicio de tratamiento</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-calendar [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [(ngModel)]="nna.fechaInicioTratamiento"  />
+                            </div>
+                        </div>
+                        <div class="row mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Nombre de la Institución en la que recibe tratamiento actualmente (IPS)</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-autoComplete 
+                                    [(ngModel)]="selectedIPS"
+                                    [suggestions]="filteredItems"
+                                    [forceSelection]="true"
+                                    (completeMethod)="searchItems($event)"
+                                    [field]="'nombre'" 
+                                    [minLength]="3"
+                                    placeholder="Buscar IPS"
+                                    [dropdown]="false">
+                                </p-autoComplete>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="fechaNacimiento" class="fw-bold">Recaídas</label>
+                            </div>
+                            <div class="col-8 button-group d-inline-flex align-items-center p-fluid">
+                                <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': nna.recaida}" style="width: 70px;" (click)="applyRecaida(true)">SÍ</button>
+                                <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': nna.recaida === false}" style="width: 70px;" (click)="applyRecaida(false)">NO</button>
+                                <input type="number" min="0" pInputText style="width: 100%;" [(ngModel)]="nna.cantidadRecaidas" [disabled]="nna.recaida === false" />
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoEnTratamiento">
+                            <div class="col-4">
+                                <label for="fechaUltimaRecaida" class="fw-bold">Fecha última recaída</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-calendar [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" [(ngModel)]="nna.fechaUltimaRecaida"  />
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 flex flex-wrap p-fluid" *ngIf="estadoSinDiagnostico">
+                            <div class="col-4">
+                                <label for="razonesSinDiagnostico" class="fw-bold">Razones por las cuales el menor no tiene diagnóstico</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [options]="razonesSinDiagnostico"
+                                    [(ngModel)]="selectedRazonSinDiagnostico"
+                                    [loading]="isLoadingRazonesSinDiagnostico"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="razonesSinDiagnostico"
+                                    id="razonesSinDiagnostico"
+                                    placeholder="Seleccione" />
+                            </div>
+                        </div>
+                        <div class="row mb-2 flex flex-wrap p-fluid" *ngIf="estadoSinTratamiento">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Razones por las cuales el menor no ha iniciado el tratamiento</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [options]="razonesSinDiagnostico"
+                                    [(ngModel)]="selectedRazonSinDiagnostico"
+                                    [loading]="isLoadingRazonesSinDiagnostico"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="razonesSinDiagnostico2"
+                                    id="razonesSinDiagnostico2"
+                                    required="true"
+                                    placeholder="Seleccione" />
+                            </div>
+                        </div>
+                        <div class="row mb-2" *ngIf="estadoSinTratamiento">
+                            <div class="col-8 offset-4">
+                                <div *ngIf="submitted2 && !nna.RazonesSinIniciarTratamiento" class="text-danger">
+                                    Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoSinTratamiento">
+                            <div class="col-8 offset-4">
+                                <input id="otrasRazones" type="text" placeholder="Otro, ¿Cuál?" pInputText [(ngModel)]="nna.RazonesSinIniciarTratamientoOtros">
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="estadoSinDiagnostico">
+                            <div class="col-8 offset-4">
+                                <input id="otrasRazones" type="text" placeholder="Otro, ¿Cuál?" pInputText [(ngModel)]="nna.motivoNoDiagnosticoOtro">
+                            </div>
+                        </div>
+                        <app-seguimiento-alertas  (alertasChange)="onAlertasChange($event)" *ngIf="estadoSinDiagnostico || estadoSinTratamiento" />
+                    </p-card>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p-card [style]="{ 'background-color': '#eef2f8', 'height': '100%' }">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="pi pi-comment me-2 text-primary" style="font-size: 1rem; color: #708090"></i>
+                                <label class="fs-5 text-primary">POSIBLES ESTADOS</label>
+                            </div>
+                            <div class="col-12">
+                                <hr class="mb-0">
+                            </div>
+                        </div>
+                        <div class="row" *ngFor="let estado of estados">
+                            <div class="col-4">
+                                <label class="fw-bold small">{{ estado.nombre }}</label>
+                            </div>
+                            <div class="col-8">
+                                <label class="small" style="text-align: justify;">{{ estado.descripcion }}</label>
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-0">
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+            </div>
+            <div class="row align-items-center mt-3">
+                <div class="col-12 text-center">
+                    <button class="btn text-white rounded-4 btn-lg me-3" type="button" style="background-color: #fac87e; width: 320px;"
+                        (click)="abrirGuardarYReagendar()">
+                        GUARDAR Y REAGENDAR
+                    </button>
+                    <button class="btn text-white rounded-4 btn-lg" type="button" style="background-color: #ff9801; width: 200px;" (click)="Siguiente()" ><i *ngIf="saving" class="pi pi-spin pi-spinner"></i> SIGUIENTE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-seguimiento-guardar 
+        [show]="showGuardarSeguimiento" 
+        [seguimiento]="seguimientoActual"
+        (onClose)="cerrarGuardarYReagendar()" 
+    />
+</body>
+

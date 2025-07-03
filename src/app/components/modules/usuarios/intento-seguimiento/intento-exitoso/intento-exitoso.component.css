@@ -1,0 +1,112 @@
+*{
+  font-family: 'Montserrat', sans-serif;
+}
+.parrafo {
+  font-family: Montserrat;
+  font-size: 16px;
+  line-height: 19.5px;
+  text-align: left;
+  color: #4D4D4D;
+  text-align: justify;
+}
+
+
+.tajetaClara{
+
+  border-radius: 20px;
+  opacity: 0px;
+  background: #EEF3F9 !important;
+  padding: 30px
+}
+
+.tajetaBlanca{
+  font-family: Montserrat;
+  border-radius: 20px;
+  opacity: 0px;
+  background: white !important;
+  padding: 20px
+}
+
+.titulo {
+  font-family: Montserrat;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24.38px;
+  text-align: left;
+  color: #4D4D4D;
+
+}
+
+.ajuste{
+  font-family: var(--font-family);
+  font-feature-settings: var(--font-feature-settings, normal);
+  font-size: 1rem;
+  color: #334155;
+  background: #ffffff;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, outline-color 0.2s;
+  appearance: none;
+  border-radius: 6px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #73b7ad;
+  font-size: medium;
+}
+
+.btn-fallido {
+  background-color: #c0c0c0;
+  color: #fff;
+}
+
+.btn-fallido:focus-visible {
+  outline: none;
+}
+
+.btn-fallido:hover {
+  background-color: #a9a9a9;
+}
+
+.btn-fallido:active {
+  background-color: #808080;
+}
+
+.btn-exitoso {
+  background-color: #73b7ad;
+  color: #fff;
+}
+
+.btn-exitoso:focus-visible {
+  outline: none;
+}
+
+.btn-exitoso:hover {
+  background-color: #5f9e94;
+}
+
+.btn-exitoso:active {
+  background-color: #4c7d76;
+}
+
+
+::ng-deep .p-datepicker table td > span {
+  width: 1.3rem !important;
+  height: 1.3rem !important;
+}
+
+::ng-deep .p-calendar .p-inputtext {
+
+  width: 215px !important;
+  font-size: 14px;
+  padding: 4px;
+  height: 2rem !important;
+}
+
+::ng-deep #body{
+  background-color: #F8FBFB;
+}

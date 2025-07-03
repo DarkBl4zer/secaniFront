@@ -1,0 +1,52 @@
+/*Estilos para el titulo de la vista*/
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-left,
+.header-right {
+    flex: 1;
+}
+
+.header-right {
+    text-align: right;
+}
+
+/*Estilos para las tarjetas de la vista*/
+
+th {
+    color: gray;
+    font-weight: normal;
+    font-size: 14px;
+    background-color: white;
+    border-bottom: 1px solid #dee2e6; /* Solo muestra la línea inferior */
+}
+
+td {
+  border-bottom: 1px solid #f0f2f4;
+}
+
+/*Estilos de lso botones inferiores*/
+
+.btn-detalle-seguimiento {
+    background-color: #FF9801;
+    color: white;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.btn-detalle-seguimiento:hover {
+    background-color: #ff9901c3;
+    color: white;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}

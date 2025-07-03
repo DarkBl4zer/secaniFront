@@ -1,0 +1,134 @@
+<body class="formato-fondo fuente-letra pe-4">
+    <div class="row mb-3  align-items-center">
+        <div class="col-12 d-flex justify-content-between">
+            <p-breadcrumb class="" [model]="items">
+                <ng-template pTemplate="item" let-item>
+                    <ng-container *ngIf="item.route; else elseBlock">
+                        <a [routerLink]="item.route" class="p-menuitem-link">
+                            <span [ngClass]="[item.icon ? item.icon : '', 'text-color']"></span>
+                            <span class="text-primary font-semibold">{{ item.label }}</span>
+                        </a>
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <a [href]="item.url">
+                            <span class="text-color">{{ item.label }}</span>
+                        </a>
+                    </ng-template>
+                </ng-template>
+            </p-breadcrumb>
+            <div>
+                Estado: <app-estado-nna [nnaEstadoId]="nna.estadoId" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <app-seguimiento-steps [stepsCount]="6" [activeIndex]="5" />
+        </div>
+    </div>
+    <div class="row bm-2">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <p-card [style]="{ 'height': '100%' }">
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid">
+                            <div class="col-4">
+                                <label for="estado" class="fw-bold">Estado</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <p-dropdown
+                                    [(ngModel)]="selectedEstado"
+                                    [options]="estados"
+                                    [loading]="isLoadingEstados"
+                                    [disabled]="true"
+                                    optionLabel="nombre"
+                                    [filter]="true"
+                                    filterBy="nombre"
+                                    [showClear]="true"
+                                    name="estado"
+                                    id="estado"
+                                    placeholder="Seleccione" />
+                            </div>
+                        </div>
+                        <div class="row mb-3 p-fluid">
+                            <div class="col-4">
+                                <label for="observaciones" class="fw-bold">Observación</label>
+                            </div>
+                            <div class="col-8 flex-auto">
+                                <textarea id="observaciones" pInputText rows="3" maxlength="5000" [(ngModel)]="seguimiento.observacionAgente" placeholder="Escriba aquí"></textarea>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="(alertasPendientes?.length ?? 0) > 0">
+                            <div class="col-12">
+                                <div class="row align-items-center mb-3" *ngFor="let item of alertasPendientes">
+                                    <div class="col-6 col-md-8">
+                                        <label for="tratamientoRequirioCambiodeCiudad" class="fw-bold">¿La alerta {{ item.nombre }} fue solucionada por la EAPB?</label>
+                                    </div>
+                                    <div class="col-6 col-md-4 button-group d-inline-flex align-items-center d-flex justify-content-end">
+                                        <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': item.resuelta == true }" style="width: 70px;" (click)="item.resuelta = true">SÍ</button>
+                                        <button class="btn col-auto rounded-2 text-center me-2 py-0" [ngClass]="{'active': item.resuelta == false }" style="width: 70px;" (click)="item.resuelta = false">NO</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row align-items-center mb-2 flex flex-wrap p-fluid" *ngIf="alertas && alertas.length > 0">
+                            <div class="col-12">
+                                <label class="fw-bold mb-2">Alertas Identificadas</label>
+                                <p-table [value]="alertas" [responsive]="true"
+                                    [paginator]="true" [rows]="5"
+                                    [rowsPerPageOptions]="[5, 10, 25, 50]" [showCurrentPageReport]="true"
+                                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th class="header-th" [width]="200">Categoria</th>
+                                            <th class="header-th">Subcategoria</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-alertas>
+                                        <tr>
+                                            <td>{{ alertas.categoriaAlerta }}</td>
+                                            <td>{{ alertas.subcategoriaAlerta }}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+                <div class="col-12 col-md-6">
+                    <p-card [style]="{ 'background-color': '#eef2f8', 'height': '100%' }">
+                        <div class="row">
+                            <div class="col-12">
+                                <i class="pi pi-comment me-2 text-primary" style="font-size: 2rem"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 fs-5" style="text-align: justify;">
+                                <p>
+                                    De acuerdo a la anterior llamada tenemos en el sistema que el menor presenta una/s alerta en su tratamiento ({{concatenatedAlertas}}) y esta es una llamada de seguimiento.
+                                </p>
+                                <p>
+                                    Por favor nos puede informar alguna actualización de datos.
+                                </p>
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-seguimiento-historial [id]="id || 0" />
+                </div>
+            </div>
+            <div class="row align-items-center mt-3">
+                <div class="col-12 text-center">
+                    <button class="btn text-white rounded-4 btn-lg" type="submit" style="background-color: #ff9801; width: 400px;" (click)="guardar()"><i *ngIf="saving" class="pi pi-spin pi-spinner"></i> GUARDAR Y GESTIONAR ALERTAS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-seguimiento-guardar [show]="showDialog" [seguimiento]="seguimiento" (closeModal)="closeModal()"></app-seguimiento-guardar>
+</body>
+

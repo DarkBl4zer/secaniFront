@@ -1,0 +1,101 @@
+<br>
+<p class="titulo">Casos NNA cáncer infantil</p>
+<br>
+
+<p-table [value]="casos" [tableStyle]="{ 'min-width': '50rem' }"
+[paginator]="true"
+[rows]="5"
+[paginatorPosition]="'bottom'"
+[alwaysShowPaginator]="true"
+[rowsPerPageOptions]="[5, 10, 25, 50]"
+[showCurrentPageReport]="true"
+currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+>
+  <ng-template pTemplate="header">
+      <tr>
+          <th id="a1">ID Caso</th>
+          <th id="a2">Fecha notificación</th>
+          <th id="a3">Nombre NNA</th>
+          <th id="a3">Nombre EAPB</th>
+          <th id="a4">Alertas</th>
+          <th id="a5">Observaciones</th>
+          <th id="a6">Estado</th>
+          <th id="a7">Respuesta</th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-casos>
+      <tr class="custom-row-border">
+          <td>{{ casos.nnaId }}</td>
+          <td>{{ casos.fechaNotificacionSIVIGILA  | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          <td>{{ casos.nombre }}</td>
+          <td>ENTIDAD_17</td>
+          <td>
+            <span *ngFor="let alerta of valores(casos.estadoAlertasIds) || []" [ngClass]="getBadgeColor(alerta)" class="badge text-white me-1">
+              {{ alerta }}
+              </span>
+
+          </td>
+          <td>{{ casos.observacionesSolicitante }}</td>
+          <td><p-tag [value]="obtenerNombreEstadoSeguimiento(casos.estadoSeguimientoId)"   styleClass="custom-tag"/></td>
+          <td><a (click) = "verRespuesta()"><img src="iconos/ojo.svg" alt="ojo"/></a></td>
+      </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog  [(visible)]="displayModal" [modal]="true">
+  <div style="text-align:center">
+    <p class="tituloAlerta">Respuesta a notificación de alerta</p>
+    1.Accesibilidad - 1.F No tener implementados esquemas de diagnóstico.
+  </div>
+  <br>
+  <table class="table">
+    <tr>
+      <th>
+        Para
+      </th>
+      <td>
+        aaaa
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Con copia
+      </th>
+      <td>
+        bbb
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Asunto
+      </th>
+      <td>
+        ccccccc
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Mensaje
+      </th>
+      <td>
+        ddddd
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Firma
+      </th>
+      <td>
+        eeee
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Adjuntos
+      </th>
+      <td>
+        hhhh
+      </td>
+    </tr>
+  </table>
+</p-dialog>

@@ -1,0 +1,69 @@
+<div class="m-3">
+    <div class="header-container">
+        <div class="header-left">
+            <a  [routerLink]="['/gestion/seguimientos']">Seguimientos</a> > {{datosNNA.nombreCompleto}}
+        </div>
+        <div class="header-right">
+            Estado: <app-estado-nna [nnaEstadoId]="datosNNA.idEstado" />
+        </div>
+    </div>
+    <div class="my-3">
+        <h3>Detalle Seguimiento</h3>
+    </div>
+
+    <app-info-seguimiento-nna [idNNA]="idNNA" />
+
+    <div class="card">
+        <p-table [value]="seguimientos" [responsive]="true"
+            [paginator]="true" [rows]="5"
+            [rowsPerPageOptions]="[5, 10, 25, 50]" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="header-th">Fecha Seguimiento</th>
+                    <th class="header-th">Asunto</th>
+                    <th class="header-th">Alerta</th>
+                    <th class="header-th">Observación</th>
+                    <th class="header-th">Entidad sobre la que se genera la alerta</th>
+                    <th class="header-th">Fecha Notificación</th>
+                    <th class="header-th">Respuesta de la entidad</th>
+                    <th class="header-th">Fecha de Respuesta</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-seguimiento>
+                <tr>
+                    <td>{{ seguimiento.fechaSeguimiento | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ seguimiento.asunto }}</td>
+                    <td>
+                        <span *ngFor="let alerta of seguimiento.alertasSeguimientos" [ngClass]="getBadgeColor(alerta.estadoId)"
+                            class="badge text-white me-1">
+                            {{ alerta.nombreAlerta }}
+                        </span>
+                    </td>
+                    <td>{{ seguimiento.observacion }}</td>
+                    <td>{{ seguimiento.nombreEntidad }}</td>
+                    <td>{{ seguimiento.fechaNotificacion | date:'dd/MM/yyyy' }}</td>
+                    <td style="text-align: center;">
+                        <button (click)="respuestaEntidad()" class="btn" aria-label="Ver">
+                            <i class="bi bi-eye-fill" style="color: #73b7ad;"></i>
+                        </button>
+                    </td>
+                    <td>{{ seguimiento.fechaRespuesta | date:'dd/MM/yyyy' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center" style="margin-top: 20px;">
+        <div>
+            <button class="btn btn-detalle-seguimiento" (click)="descargarPDFSeguimiento()">
+                <i class="bi bi-file-earmark-pdf-fill me-2"></i>EXPORTAR SEGUIMIENTO
+            </button>
+            <button class="btn btn-detalle-seguimiento" (click)="intentosLlamada(seguimientos[0].idSeguimiento)">
+                <i class="bi bi-telephone-outbound-fill me-2"></i>GENERAR CONTACTO
+            </button>
+        </div>
+    </div>
+
+</div>

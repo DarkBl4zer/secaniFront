@@ -1,0 +1,23 @@
+.titulo{
+ font-size: 14px;font-weight: 400;line-height: 18px;letter-spacing: -0.01em;
+  color: #ACACAC;
+}
+
+.valor{
+  font-size: 32px;font-weight: 600;line-height: 25px;letter-spacing: -0.01em;
+  color: #4D4D4D;
+}
+
+.porcentaje{
+  font-size: 12px;font-weight: 400;line-height: 18px;letter-spacing: -0.01em;
+  color: #292D32;
+}
+
+
+.porcentaje_1{
+  color: #73B7AD;
+}
+
+.porcentaje_2{
+  color: #FF9801;
+}
